@@ -60,10 +60,52 @@ def read_weather_data():
 	filelist = glob.glob(WEATHER_DATA_PATH) 
 	weather_data = pd.concat(pd.read_csv(file, index_col=None, header=0, skiprows=16) for file in filelist)
 	weather_data = weather_data[weather_data["Weather"].notnull()]
-	weather_data = weather_data[["Date/Time", "Year", "Month", "Day", "Time", "Temp (°C)", "Weather"]] 
+	weather_data = weather_data[["Date/Time", "Year", "Month", "Day", "Time", "Temp (°C)", "Weather"]]
+	weather_data['Weather'] = weather_data['Weather'].apply(clean_weather_label) 
 	weather_data.to_csv("weather.csv", index=False)
 	(weather_data['Weather'].drop_duplicates()).to_csv("unique_weather_label", index=False)
 	return weather_data
 
-def clean_data(image_data, weather_data):
-	return image_data, weather_data
+
+
+clean_labels_dict = {'Mostly Cloudy':'Cloudy', 
+					 'Mainly Clear':'Clear',
+					 'Rain Showers':'Rain',
+					 'Heavy Rain':'Rain',
+					 'Moderate Rain Showers':'Rain',
+					 'Rain,Drizzle,Fog':'Rain and Fog',
+					 'Rain,Fog':'Rain and Fog',
+					 'Drizzle':'Rain',
+					 'Thunderstorms,Rain Showers':'Thunderstorms',
+					 'Moderate Rain,Fog':'Rain and Fog',
+					 'Rain Showers,Fog':'Rain and Fog',
+					 'Drizzle,Fog':'Rain and Fog',
+					 'Moderate Rain Shower,Fog':'Rain and Fog',
+					 'Moderate Rain':'Rain',
+					 'Rain,Drizzle':'Rain',
+					 'Moderate Rain,Drizzle':'Rain',
+					 'Heavy Rain,Fog': 'Rain',
+					 'Snow Showers':'Wet Snow',
+					 'Rain Showers,Snow Showers':'Wet Snow',
+					 'Rain,Snow':'Wet Snow',
+					 'Snow,Fog':'Snow and Fog',
+					 'Freezing Fog':'Fog',
+					 'Rain,Snow,Fog':'Wet Snow and Fog',
+					 'Moderate Snow,Fog':'Wet Snow and Fog',
+					 'Moderate Snow':'Snow',
+					 'Snow,Ice Pellets,Fog':'Hail and Fog',
+					 'Ice Pellets':'Hail',
+					 'Freezing Rain,Fog':'Rain and Fog',
+					 'Rain,Ice Pellets':'Rain and Hail',
+					 'Rain Showers,Snow Showers,Fog':'Wet Snow and Fog',
+					 'Rain Showers,Snow Pellets':'Rain and Hail'}
+
+
+
+def clean_weather_label(label):
+    if label in clean_labels_dict
+		label = clean_labels_dict[label]
+		
+	return label
+
+
