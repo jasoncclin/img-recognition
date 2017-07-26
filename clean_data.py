@@ -103,7 +103,7 @@ clean_labels_dict = {'Mostly Cloudy':'Cloudy',
 
 
 def clean_weather_label(label):
-    if label in clean_labels_dict
+	if label in clean_labels_dict:
 		label = clean_labels_dict[label]
 		
 	return label
