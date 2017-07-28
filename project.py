@@ -29,30 +29,22 @@ def main():
 	scores = [] 
 	kFold = 10
 
-	# predicted = cross_val_predict(models[5], X_train, y_train, cv=kFold)
-	# score = metrics.accuracy_score(y_train, predicted)
-	
-	score = cross_val_score(models[3], X_train, y_train, cv=kFold)
-	scores.append(score)
+  # score = cross_val_score(models[5], X_train, y_train, cv=kFold)
+	# scores.append(score)
+
+	predicted = cross_val_predict(models[5], X_train, y_train, cv=kFold)
+	score = metrics.accuracy_score(y_train, predicted)
 	print(score)
 
+	df = pd.DataFrame({'truth': y_train, 'prediction':predicted})
+	print(df[df['truth'] != df['prediction']])
+  
 	# for i, m in enumerate(models):
 	# 	accurary_score = cross_val_score(m, X_train, y_train, cv=k)
 	#   scores.append(accurary_score)
 
- #  # Report validation scores and further do some further tuning to the models 
- #  print(OUTPUT_TEMPLATE.format(
- #  	k=kFold,
- #  	bayes_rgb=score[0],
- #  	bayes_lab=score[1],
- #  	knn_rgb=score[2],
- #  	knn_lab=score[3],
- #  	svm_rgb=score[4],
- #  	svm_lab=score[5]
- #  ))    
-
 	# Final Testing & Report Results... NO MORE TUNING OF THE MODELS 
-
+  
 
 if __name__ == '__main__':
 	main()

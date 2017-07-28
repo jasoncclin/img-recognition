@@ -60,14 +60,14 @@ def training_models():
 	svc_rgb_model = make_pipeline(
 		StandardScaler(),
 		PCA(3000),
-		SVC(kernel='rbf', decision_function_shape='ovr')
+		SVC(kernel='linear', decision_function_shape='ovr',C=1000)
 	) 
 
 	svc_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
 		PCA(3000),
-		SVC(kernel='rbf', decision_function_shape='ovr')
+		SVC(kernel='linear', decision_function_shape='ovr', C=1000)
 	) 
 
 	models = [bayes_rgb_model, bayes_lab_model, knn_rgb_model, knn_lab_model, svc_rgb_model, svc_lab_model]	    
