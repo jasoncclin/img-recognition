@@ -6,6 +6,7 @@ import re
 import os.path
 import skimage.io as skio 
 
+MULTILABEL_FLAG = False
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 IMG_DATA_PATH = os.path.join(CUR_DIR, "katkam-scaled/*.jpg")
 WEATHER_DATA_PATH = os.path.join(CUR_DIR, "yvr-weather/*.csv")
@@ -46,21 +47,20 @@ def read_image_data(weather_data):
 
 	# Find the weather data that match the images....
 	weather_data = weather_data[weather_data['Date/Time'].isin(df['Date/Time'])]
-	counts = weather_data.groupby(['Weather']).aggregate('count').reset_index()
+	weather_counts = weather_data.groupby(['Weather']).aggregate('count').reset_index()
 	weather_data.to_csv("weather.csv", index=False)
-	counts.to_csv("weather_count.csv", index=False)
-	(weather_data['Weather'].drop_duplicates()).to_csv("unique_weather_label", index=False)	
-	
-	filelist = df['filepath'].tolist()
 
+	weather_counts.to_csv("weather_count.csv", index=False)
 	df.to_csv('valid_image.csv', index=False)
 	weather_data.to_csv('valid_weather.csv', index=False)
 
+	filelist = df['filepath'].tolist()
 	imgs = skio.imread_collection(filelist)
 	img_data = np.array([(np.array(img) / 255)for img in imgs])
 	return img_data, weather_data
 
-clean_labels_dict = {'Mostly Cloudy':'Cloudy', 
+single_labels_dict = {
+					 'Mostly Cloudy':'Cloudy', 
 					 'Mainly Clear':'Clear',
 					 'Rain Showers':'Rain',
 					 'Heavy Rain':'Rain',
@@ -91,10 +91,55 @@ clean_labels_dict = {'Mostly Cloudy':'Cloudy',
 					 'Rain,Ice Pellets':'Rain',
 					 'Rain Showers,Snow Showers,Fog':'Rain_Fog',
 					 'Rain Showers,Snow Pellets':'Rain'}
+
+multi_label_dict = {
+           'Clear':  ('Clear',),
+ 					 'Cloudy': ('Cloudy',),
+					 'Rain':   ('Rain',),	
+					 'Fog':    ('Fog',),
+					 'Snow':   ('Snow',),
+					 'Mostly Cloudy':('Cloudy',), 
+					 'Mainly Clear':('Clear',),
+					 'Rain Showers':('Rain',),
+					 'Heavy Rain':('Rain',),
+					 'Moderate Rain':('Rain',),
+					 'Moderate Rain Showers':('Rain',),
+					 'Drizzle':('Rain',),
+					 'Thunderstorms':('Rain',),
+					 'Rain,Drizzle':('Rain',),
+					 'Moderate Rain,Drizzle':('Rain',),
+					 'Rain,Fog':('Rain','Fog'), 
+					 'Heavy Rain,Fog': ('Rain', 'Fog'),
+					 'Moderate Rain,Fog':('Rain','Fog'),
+					 'Rain,Drizzle,Fog':('Rain','Fog'),
+					 'Rain Showers,Fog':('Rain','Fog'),
+					 'Drizzle,Fog':('Rain', 'Fog'),
+					 'Moderate Rain Showers,Fog':('Rain','Fog'),
+					 'Rain Snow': ('Rain','Snow'),
+					 'Snow Showers':('Rain','Snow'),
+					 'Rain Showers,Snow Showers':('Rain','Snow'), 
+					 'Freezing Fog':('Fog',),
+					 'Snow,Fog':('Snow','Fog',),
+					 'Moderate Snow,Fog':('Snow','Fog'),
+					 'Moderate Snow':('Snow',),
+					 'Snow,Ice Pellets,Fog':('Snow','Fog'),
+					 'Ice Pellets':('Hail',),
+					 'Freezing Rain,Fog':('Rain','Fog'),
+					 'Rain,Ice Pellets':('Rain'),
+					 'Rain,Snow': ('Rain','Snow'),
+					 "Rain,Snow,Fog": ('Rain','Snow','Fog'),
+					 'Rain Showers,Snow Showers,Fog':('Rain','Fog'),
+					 'Rain Showers,Snow Pellets':('Rain','Snow')}
 					 
-def clean_weather_label(label):
-	if label in clean_labels_dict:
-		label = clean_labels_dict[label]
+def clean_weather_label(label, isMultilabel):
+	label_dict = None
+	if isMultilabel:
+		label_dict = multi_label_dict
+	else:
+		label_dict = single_labels_dict
+
+	if label in label_dict:
+		label = label_dict[label]
 	return label
 
 def read_weather_data():
@@ -102,9 +147,12 @@ def read_weather_data():
 	# logic borrowed from  
 	# stackoverflow https://stackoverflow.com/questions/39195113
 	filelist = glob.glob(WEATHER_DATA_PATH) 
-	weather_data = pd.concat(pd.read_csv(file, index_col=None, header=0, skiprows=16) for file in filelist)
+	weather_data = pd.concat(pd.read_csv(file, index_col=None, header=0, skiprows=16, quoting=2) for file in filelist)
 	weather_data = weather_data[weather_data["Weather"].notnull()]
 	weather_data = weather_data[["Date/Time", "Year", "Month", "Day", "Time", "Temp (°C)", "Weather"]] 
-	weather_data['Weather'] = weather_data['Weather'].apply(clean_weather_label)
+	(weather_data["Weather"].drop_duplicates()).to_csv("unique_weather_label", index=False)	
+	weather_col = weather_data["Weather"].apply(clean_weather_label, isMultilabel = MULTILABEL_FLAG)
+	weather_data['Weather'] = weather_data['Weather'].astype('object')
+	weather_data['Weather'] = weather_col
 	return weather_data
 
