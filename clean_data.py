@@ -6,7 +6,7 @@ import re
 import os.path
 import skimage.io as skio 
 
-MULTILABEL_FLAG = False
+MULTILABEL_ENABLED = False
 CUR_DIR = os.path.abspath(os.path.dirname(__file__))
 IMG_DATA_PATH = os.path.join(CUR_DIR, "katkam-scaled/*.jpg")
 WEATHER_DATA_PATH = os.path.join(CUR_DIR, "yvr-weather/*.csv")
@@ -56,7 +56,7 @@ def read_image_data(weather_data):
 
 	filelist = df['filepath'].tolist()
 	imgs = skio.imread_collection(filelist)
-	img_data = np.array([(np.array(img) / 255)for img in imgs])
+	img_data = np.array([(np.array(img))for img in imgs])
 	return img_data, weather_data
 
 single_labels_dict = {
@@ -93,8 +93,8 @@ single_labels_dict = {
 					 'Rain Showers,Snow Pellets':'Rain'}
 
 multi_label_dict = {
-           'Clear':  ('Clear',),
- 					 'Cloudy': ('Cloudy',),
+					 'Clear':  ('Clear',),
+					 'Cloudy': ('Cloudy',),
 					 'Rain':   ('Rain',),	
 					 'Fog':    ('Fog',),
 					 'Snow':   ('Snow',),
@@ -151,7 +151,7 @@ def read_weather_data():
 	weather_data = weather_data[weather_data["Weather"].notnull()]
 	weather_data = weather_data[["Date/Time", "Year", "Month", "Day", "Time", "Temp (°C)", "Weather"]] 
 	(weather_data["Weather"].drop_duplicates()).to_csv("unique_weather_label", index=False)	
-	weather_col = weather_data["Weather"].apply(clean_weather_label, isMultilabel = MULTILABEL_FLAG)
+	weather_col = weather_data["Weather"].apply(clean_weather_label, isMultilabel = MULTILABEL_ENABLED)
 	weather_data['Weather'] = weather_data['Weather'].astype('object')
 	weather_data['Weather'] = weather_col
 	return weather_data
