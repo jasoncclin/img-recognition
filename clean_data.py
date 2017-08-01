@@ -18,8 +18,8 @@ def path_to_time(path):
 	year  = filename[7:11]
 	month = filename[11:13]
 	day  = filename[13:15]  
-	time  = filename[15:17] + ':' + filename[17:19]
-	return year + '-' + month + '-' + day + ' ' + time
+	hour  = filename[15:17] + ':' + filename[17:19]
+	return year, month, day, hour
 
 def read_image_data(weather_data):
 	print("IMAGE DATA_PATH: ", IMG_DATA_PATH)
@@ -37,27 +37,33 @@ def read_image_data(weather_data):
 
 	# Extract the date/time from the file name
 	date_time = [] 
+	hour = []
 	for i, filepath in enumerate(filelist):
-		t = path_to_time(filepath)
-		date_time.append(t)
+		y,m,d,h = path_to_time(filepath)
+		date_time.append(y + '-' + m + '-' + d + ' ' + h)
+		hour.append(h)
 
 	# Find the valid images whose date/time is available in the weather data
 	df['Date/Time'] = date_time
+	df['Hour'] = hour
 	df = df[df['Date/Time'].isin(weather_data['Date/Time'])]
+
 
 	# Find the weather data that match the images....
 	weather_data = weather_data[weather_data['Date/Time'].isin(df['Date/Time'])]
-	weather_counts = weather_data.groupby(['Weather']).aggregate('count').reset_index()
-	weather_data.to_csv("weather.csv", index=False)
-
-	weather_counts.to_csv("weather_count.csv", index=False)
+	weather_counts = weather_data.groupby('Weather').aggregate('count').reset_index()
+	
 	df.to_csv('valid_image.csv', index=False)
 	weather_data.to_csv('valid_weather.csv', index=False)
-
+	weather_counts.to_csv("weather_count.csv", index=False)
+	
 	filelist = df['filepath'].tolist()
 	imgs = skio.imread_collection(filelist)
-	img_data = np.array([(np.array(img))for img in imgs])
-	return img_data, weather_data
+	img_data = np.array([(np.array(img)/255)for img in imgs])
+	weather_data = weather_data['Weather'].reset_index(drop=True)
+	hour_data = df['Hour'].reset_index(drop=True)
+
+	return img_data, hour_data, weather_data
 
 single_labels_dict = {
 					 'Mostly Cloudy':'Cloudy', 

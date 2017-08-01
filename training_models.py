@@ -1,7 +1,6 @@
 import sys
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 from skimage.color import rgb2lab
 from skimage.color import lab2rgb
@@ -48,6 +47,7 @@ def training_models():
 		
 	knn_rgb_model = make_pipeline(
 		StandardScaler(),
+		PCA(3000,whiten=True),
 		KNeighborsClassifier(n_neighbors=10)
 	)
 		
@@ -71,7 +71,7 @@ def training_models():
 		SVC(kernel='linear', decision_function_shape='ovr',C=0.000005)
 	) 
 
-	ovr_knn_lab_model = make_pipeline(
+	ovr_bayes_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
 		PCA(3000,whiten=True),
@@ -99,6 +99,7 @@ def training_models():
 						"knn_lab_model": knn_lab_model, 
 						"svc_rgb_model": svc_rgb_model, 
 						"svc_lab_model": svc_lab_model,
+						"ovr_bayes_lab_model": ovr_bayes_lab_model,
 						"ovr_knn_lab_model": ovr_knn_lab_model,
 						"ovr_svc_lab_model": ovr_svc_lab_model }
 
