@@ -41,55 +41,55 @@ def training_models():
 	bayes_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(3000),
 		GaussianNB()
 	)    
 		
 	knn_rgb_model = make_pipeline(
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(3000),
 		KNeighborsClassifier(n_neighbors=10)
 	)
 		
 	knn_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(3000),
 		KNeighborsClassifier(n_neighbors=10)
 	) 
 		
 	svc_rgb_model = make_pipeline(
 		StandardScaler(),
-		PCA(3000,whiten=True),
-		SVC(kernel='linear', decision_function_shape='ovr',C=0.000005)
+		PCA(3000),
+		SVC(kernel='linear', decision_function_shape='ovr',C=0.000009)
 	) 
 
 	svc_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
-		SVC(kernel='linear', decision_function_shape='ovr',C=0.000005)
+		PCA(3000),
+		SVC(kernel='linear', decision_function_shape='ovr',C=0.000009)
 	) 
 
 	ovr_bayes_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(3000),
 		OneVsRestClassifier(GaussianNB())
 	)
 
 	ovr_knn_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(3000),
 		OneVsRestClassifier(KNeighborsClassifier(n_neighbors=10))
 	)
 
 	ovr_svc_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000,whiten=True),
-		OneVsRestClassifier(SVC(kernel='linear',C=0.000005))
+		PCA(3000),
+		OneVsRestClassifier(SVC(kernel='linear',C=0.0000088))
 	)
 
 	models = {
