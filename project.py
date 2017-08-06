@@ -43,7 +43,7 @@ def plot_prediction(title, xlabel, ylabel, model_name, y_test, y_test_predicted,
 
 def main():
 
-  
+	
 	weathers = read_weather_data()
 	images, y_hours, y_weathers = read_image_data(weathers)
 
@@ -52,7 +52,7 @@ def main():
 
 	# Training and Testing Set for Weather 
 	X_train, X_test, y_train, y_test = train_test_split(X, y_weathers, test_size=0.2, random_state=1)
-  
+	
 	# Training and Testing Set for Hours 
 	X_train_hour, X_test_hour, y_train_hour, y_test_hour = train_test_split(X, y_hours, test_size=0.2, random_state=1)
 
@@ -64,7 +64,7 @@ def main():
 	models = training_models() 	
 
 	# Training & Validating
-  if CV_ENABLED: 
+	if CV_ENABLED: 
 		cv_weather_scores = pd.DataFrame()
 		cv_hour_scores = pd.DataFrame()
 		kFold = 5
@@ -95,7 +95,7 @@ def main():
 		test_weather_scores = pd.DataFrame()
 		test_hour_scores = pd.DataFrame()
 
-		Testing: the weather 
+		# Testing: the weather 
 		for name, model in models.items():
 			if name == 'ovr_svc_lab_model' and MULTILABEL_ENABLED:
 				model.fit(X_train_m, y_train_m)

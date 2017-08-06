@@ -28,7 +28,7 @@
   * validation_scores_weather.csv
   * validation_scores_hour.csv 
 
-* If Cross Validation is not enabled, that goes to final testing
+* If Cross Validation is not enabled, then it goes to final testing
   * testing_scores_weather.csv
   * testing_scores_hour.csv
   * weather-<model_name>.png(9 of them)
