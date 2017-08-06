@@ -56,7 +56,7 @@ def read_image_data(weather_data):
 	
 	df.to_csv('valid_image.csv', index=False)
 	weather_data.to_csv('valid_weather.csv', index=False)
-	weather_counts.to_csv("weather_count.csv", index=False)
+	weather_counts.to_csv("valid_weather_count.csv", index=False)
 	
 	filelist = df['filepath'].tolist()
 	imgs = skio.imread_collection(filelist)
@@ -85,7 +85,7 @@ def read_weather_data():
 	weather_data = pd.concat(pd.read_csv(file, index_col=None, header=0, skiprows=16, quoting=2) for file in filelist)
 	weather_data = weather_data[weather_data["Weather"].notnull()]
 	weather_data = weather_data[["Date/Time", "Year", "Month", "Day", "Time", "Temp (°C)", "Weather"]] 
-	(weather_data["Weather"].drop_duplicates()).to_csv("unique_weather_label", index=False)	
+	(weather_data["Weather"].drop_duplicates()).to_csv("unique_weather_label.csv", index=False)	
 	weather_col = weather_data["Weather"].apply(clean_weather_label, isMultilabel = MULTILABEL_ENABLED)
 	weather_data['Weather'] = weather_data['Weather'].astype('object')
 	weather_data['Weather'] = weather_col
