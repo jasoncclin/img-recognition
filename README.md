@@ -1,7 +1,7 @@
 #### Required version of Python : 
 
 * Python 3.6.0 
-  (Any versoin of Python 3 should work, but Python 3.6 was used in development)
+  (Any version of Python 3 should work, but Python 3.6 was used in development)
 
 #### Required Software Libraries: 
 

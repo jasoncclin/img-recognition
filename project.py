@@ -24,6 +24,10 @@ def plot_prediction(title, xlabel, ylabel, model_name, y_test, y_test_predicted,
 	correct_pred = df.groupby(['truth'])['correctness'].aggregate('sum').reset_index()
 	labels = pred['truth'].values.tolist()
 	x = range(1,len(labels) + 1)
+
+	# True:  plt.figure(1)
+	# False: plt.figure(0)
+	plt.figure(isWeather)
 	plt.title(title)
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
