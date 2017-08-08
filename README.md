@@ -5,11 +5,14 @@
 
 #### Required Software Libraries: 
 
-* numpy
-* pandas 
-* matplotlib
-* scikit-learn/scikit-image
+* numpy  (1.11.3)
+* pandas (0.19.2)
+* matplotlib (2.0.0)
+* scikit-image (0.12.3)
+* scikit-learn (0.18.1)
 * glob/os/re/sys
+* If it says tkinter is not found, please run `sudo apt-get install python3-tk`
+
 
 #### Commands: 
 
