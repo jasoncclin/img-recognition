@@ -35,60 +35,60 @@ def flatten_images(images):
 def training_models():
 	bayes_rgb_model = make_pipeline(
 		StandardScaler(),
-		PCA(3000,whiten=True),
+		PCA(150),
 		GaussianNB()
 	)
 	bayes_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		GaussianNB()
 	)    
 		
 	knn_rgb_model = make_pipeline(
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		KNeighborsClassifier(n_neighbors=10)
 	)
 		
 	knn_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		KNeighborsClassifier(n_neighbors=10)
 	) 
 		
 	svc_rgb_model = make_pipeline(
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		SVC(kernel='linear', decision_function_shape='ovr',C=0.000009)
 	) 
 
 	svc_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		SVC(kernel='linear', decision_function_shape='ovr',C=0.000009)
 	) 
 
 	ovr_bayes_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		OneVsRestClassifier(GaussianNB())
 	)
 
 	ovr_knn_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		OneVsRestClassifier(KNeighborsClassifier(n_neighbors=10))
 	)
 
 	ovr_svc_lab_model = make_pipeline(
 		FunctionTransformer(func=rgb2lab_wrapper),
 		StandardScaler(),
-		PCA(3000),
+		PCA(150),
 		OneVsRestClassifier(SVC(kernel='linear',C=0.0000088))
 	)
 
