@@ -18,7 +18,7 @@
 
 	$ Python3 project.py
 
-* It takes approximately 2 hours to train all the models
+* It takes approximately 1 hour to train all the models
 
 #### Output files: 
 
